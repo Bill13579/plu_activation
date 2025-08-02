@@ -29,7 +29,7 @@
 % --- Document Information ---
 \title{From Taylor Series to Fourier Synthesis: \\ The Periodic Linear Unit}
 \author{Shiko Kudo \\ National Taiwan University}
-\date{\today}
+\date{August 1, 2025}
 
 % --- Start of Document ---
 \begin{document}
@@ -330,3 +330,5 @@ A primary benefit this activation function has that was put into consideration w
 A neural network must squeeze as much "representational power" as possible out of every operation run. Convolutions are linear operations, and summing multiple linear operations still gives you a linear operation. In gradient descent in general, non-linearities are the cornerstones which allows a complex linear transform to actually gain deep representational power, and by doing the activation after, we end up throwing away that power we could have gained, smearing the multi-scale convolutions together. This is not ideal. Thus, we instead use a periodic activation on the convolution outputs before summing, allowing for interference, but retaining the representational power of the different convolution "heads". The periodicity then provides both an ingrained periodic structure, as well as a non-linearity.
 
 \end{document}
+
+\typeout{get arXiv to do 4 passes: Label(s) may have changed. Rerun}
