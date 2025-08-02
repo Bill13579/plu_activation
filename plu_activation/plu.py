@@ -19,10 +19,14 @@ class PeriodicLinearUnit(nn.Module):
         The `sin(x)` component then provides periodic non-linearity.
         
         Args:
-            alpha (float):
+            init_alpha (float):
                 Period multiplier
-            beta (float): 
+            init_beta (float): 
                 Signed, soft-bounded strength of periodic non-linearity
+            init_rho_alpha (float):
+                Repulsion term for keeping α away from 0.0, keeping α_eff >= sqrt(ρ_α)
+            init_rho_beta (float):
+                Repulsion term for keeping β away from 0.0, keeping β_eff >= sqrt(ρ_β)
         """
         super().__init__()
         self.alpha = nn.Parameter(torch.full((num_parameters,), init_alpha))
