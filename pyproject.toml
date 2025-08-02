@@ -1,0 +1,24 @@
+[project]
+name = "plu-activation"
+version = "0.1.0"
+description = "Periodic Linear Unit (PLU) activation function implementation in PyTorch"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE-MIT"}
+dependencies = [
+    "numpy>=1.26.0",
+    "torch==2.6.0",
+    "matplotlib==3.10.5",
+    "scikit-learn==1.7.1"
+]
+
+[project.urls]
+Homepage = "https://github.com/Bill13579/plu-activation"
+Repository = "https://github.com/Bill13579/plu-activation"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
