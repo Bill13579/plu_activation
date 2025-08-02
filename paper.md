@@ -17,16 +17,16 @@ We demonstrate on the spiral classification task that this design leads to a fun
 
 Before we reach the final formulation, let us begin by examining a simpler formulation, and set the scene for where the formulation originated from initially.
 
-The problem begins with audio synthesis, where we would like to introduce an inductive bias or repeating signals. However, while Snake is one such formulation that 
+The problem begins with audio synthesis, where we would like to introduce an inductive bias for repeating signals. However, while Snake is one such formulation that 
 is already widely adopted, it had certain restrictions, such as not being an odd function. Could we achieve similar results using a simple, odd, pure sine wave?
-Let us put aside the implications of what we would be turning the neural network into and the implications for later, and focus only on this idea. Our theoretical first draft for the PLU is as follows:
+Let us put aside the implications of what we would be turning the neural network into and save it for later, focusing only on this idea for now. Our theoretical first draft for the PLU is as follows:
 
 PLU_theoretical(x, α, β) = x + (β / (1 + |β|)) * sin(|α| * x) [Formula 1]
 
 where α and β are learnable parameters controlling the frequency and amplitude
 
 The `x` component serves as a residual path. By including it, the function is identity-like at its core, 
-allowing gradients can flow through it easily just like a residual connection. It prevents the vanishing gradient problem and makes training much more stable.
+allowing gradients to flow through it easily just like a residual connection. It prevents the vanishing gradient problem and makes training much more stable.
 
 The `sin(x)` component then provides periodic non-linearity.
 
@@ -220,7 +220,7 @@ or in direct terms a minimum multiplier on the sin component of (β_eff / (1 + |
 
 To validate the efficacy and unique properties of the Periodic Linear Unit (PLU), we conduct a series of experiments on the classic spiral classification task. This task is notoriously difficult for simple statistical models as it requires learning a highly non-linear, curved decision boundary. We compare PLU against three standard activation functions: ReLU, GELU, and the periodic Snake activation.
 
-***Experimental Setup:*** All models are simple Multi-Layer Perceptrons (MLPs) trained with the Adam optimizer (lr=0.01) and Binary Cross-Entropy loss. A crucial constraint is applied to all experiments: for both PLU and Snake which are parametric, the learnable activation parameters are **shared** across all neurons in a layer. This provides a challenging test case, as the network must find a single activation shape which is suitable for all neurons.
+***Experimental Setup:*** All models are simple Multi-Layer Perceptrons (MLPs) trained with the Adam optimizer (lr=0.01) and Binary Cross-Entropy loss. A crucial constraint is applied to all experiments: for both PLU and Snake which are parametric, the learnable activation parameters are **shared** across all neurons in the entire network. This provides a challenging test case, as the network must find a single activation shape which is suitable for all neurons.
 
 ## Superior Convergence and Expressivity in a Standard MLP
 
@@ -264,7 +264,7 @@ The final and most definitive experiment reduces the network to its absolute min
 
 The results in Figure 4 demonstrate the ReLU, GELU, and Snake models fail, producing simple linear or single-curved boundaries with high final losses (0.6266, 0.5567, 0.5870 respectively).
 
-The PLU network, in stark contrast, achieves a final loss of **0.4165**. Remarkably, the network achieves this with only two neurons and a single, shared activation function shape, demonstrating the power of a well-formed inductive bias.
+The PLU network, in stark contrast, achieves a final loss of **0.4165**. Remarkably, the network achieves this with only two neurons and a single, shared activation function shape.
 
 On a separate run, it is able to achieve an even lower loss of 0.3046, the example image of which is provided in the accompanying examples in the code repository.
 
@@ -376,7 +376,7 @@ inefficiency.
 
 Caption: An odd activation will allow constructive/destructive interference here, while simultaneously maintaining non-linearity for each convolution individually, thus creating two powerful non-linear functions for the price of one.
 
-A neural network must squeeze as much "representational power" as possible out of every operation run. Convolutions are linear operations, 
+A neural network must squeeze as much "representational power" as possible out of every operation. Convolutions are linear operations, 
 and summing multiple linear operations still gives you a linear operation. In gradient descent in general, non-linearities are the cornerstones which allows a complex linear 
 transform to actually gain deep representational power, and by doing the activation after, we end up throwing away that power we could have gained, smearing the multi-scale 
 convolutions together. This is not ideal. Thus, we instead use a periodic activation on the convolution outputs before summing, allowing for interference, but retaining 
