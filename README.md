@@ -1,4 +1,6 @@
-## From Taylor Series to Fourier Synthesis: The Periodic Linear Unit - Code Repository
+### From Taylor Series to Fourier Synthesis: The Periodic Linear Unit - Code Repository
+
+**arXiv:** https://arxiv.org/abs/2508.01175
 
 This repository contains the PyTorch implementation of the **Periodic Linear Unit (PLU)** activation function, as described in the paper "From Taylor Series to Fourier Synthesis: The Periodic Linear Unit".
 
