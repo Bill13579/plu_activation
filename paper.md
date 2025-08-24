@@ -32,13 +32,13 @@ The `sin(x)` component then provides periodic non-linearity.
 
 ## Choices Made
 
-The scaling factors are important hyperparemeters. β provides balancing between the sine wave and the linear component. β=1.0 is a good default value, as 
-it strikes a delicate balance between the periodic gradient "deadzone" that begins occuring every pi cycles if it is set much higher, 
+The scaling factors are important hyperparameters. β provides balancing between the sine wave and the linear component. β=1.0 is a good default value, as 
+it strikes a delicate balance between the periodic gradient "deadzone" that begins occurring every pi cycles if it is set much higher, 
 and the completely non-periodic simple linear unit obtained from setting it to 0.0. α provides the means for modifying the period of the activation.
 
 There are some important reasons why α and β are separate parameters within this activation. Specifically, the (β / (1 + |β|)) term provides several tangible benefits:
 1. While the model is given freedom to increase the oscillation of the activation through changing the β, there is a point at which such oscillations become a major issue.
-    A rapidly oscillating activation deteorates the loss landscape significantly with its severe non-monotonicity, and can lead to numerical stability issues or training runs 
+    A rapidly oscillating activation deteriorates the loss landscape significantly with its severe non-monotonicity, and can lead to numerical stability issues or training runs 
     that have to be stopped midway.
     Having the scaling term be formulated as (β / (1 + |β|)) however, means that the activation discourages runaway activations like this. It discourages the model from 
     introducing wildly fluctuating activations, as you have to have β become very large to obtain such results. The maximum oscillation which can be introduced by the model is 
@@ -141,9 +141,9 @@ This means that perhaps, having the entire range of parameters in PLU be 'safe' 
 The key in solving the problem of helping the optimizer learn to utilize the complex activation function is the often reinforced observation about the path of 
 least resistance. If there are two directions which the model weights can go in, one that immediately raises the loss immensely but with the unknowable potential of 
 a lower loss beyond the cliff, and another that promises to lower the loss slightly, the gradient step will overwhelmingly be in the direction of lowering the loss.
-Mechanisms such as the RMSProp (Hinton et al.) or Adam (Kingma & Ba, 2017) optimizers attempt to fix this, but even they will not let a model take a step that appears to increse the loss ten-fold.
+Mechanisms such as the RMSProp (Hinton et al.) or Adam (Kingma & Ba, 2017) optimizers attempt to fix this, but even they will not let a model take a step that appears to increase the loss ten-fold.
 
-Thus, the key in forcing the optimizer to use PLU to its full effect turns out to be in purposefully making the increse in loss from turning it into a linear function 
+Thus, the key in forcing the optimizer to use PLU to its full effect turns out to be in purposefully making the increase in loss from turning it into a linear function 
 immense. While previously, the optimizer might have, at the very first step, seen the two paths and decided that the loss can be lowered by reducing the PLU to a linear 
 function, we now seek for the optimizer to instead see a massive towering cliff in front of the path towards a more linear PLU, while the path away is unimpeded.
 
@@ -179,7 +179,7 @@ forced to push β away from the zero-crossing, thus avoiding the linear identity
 
 The most crucial part of this reparameterization is that for a sufficiently large α and β, the reparameterization does not occur.
 The original α and β are simply passed through, as both ρ_p / p terms approach 0.0 as p=(α or β) grows.
-This is the mathematical formulation of our "gradient wall" idea. In the end, all that is affected is the asympototic behavior at α=0.0 and β=0.0, and the full expressive 
+This is the mathematical formulation of our "gradient wall" idea. In the end, all that is affected is the asymptotic behavior at α=0.0 and β=0.0, and the full expressive 
 behavior of PLU is left fully intact.
 We term this mechanism Repulsive Reparameterization.
 
@@ -201,7 +201,7 @@ P_0^(-2) = ρ_P^(-1)
 P_0 = sqrt(ρ_P)
 
 Thus, the reparametrization scheme in effect 
-limits the effective range of P to P_eff >= P_0, or more intuitively P_eff >= sqrt(ρ_P).
+limits the effective range of P to P_eff >= 2 * P_0, or more intuitively P_eff >= 2 * sqrt(ρ_P).
 
 Putting this in context with the two parameters of PLU:
 
