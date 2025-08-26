@@ -207,14 +207,14 @@ Putting this in context with the two parameters of PLU:
 
 α is the period multiplier, and a larger value produces a PLU which oscillates faster. A lower value on the other hand 
 creates longer oscillations. In this case then we should set ρ_α based on the lower bound of how wide of an activation oscillation 
-we want to allow. A ρ_α of 5.0, as an example, will allow any α_eff >= sqrt(5.0)=2.2360679775.
+we want to allow. A ρ_α of 5.0, as an example, will allow any α_eff >= 2*sqrt(5.0)=4.472135955.
 An overly large ρ_α will force the model into utilizing a PLU activation with a fast oscillation by enforcing a minimum frequency on the sin component in this way, the effects of which are explored in our 'High-Frequency Prior' experiment (Section <insert later>, [The "Chaotic Initialization" Paradigm]).
 The effects of this are interesting to say the least, and will be explored later, as they indicate a profound shift in how neural networks can learn.
 
 β is then the soft-bounded strength of the sine component. In the previous section it was mentioned that a β value of 0.0 corresponds to 
 a linear function, and as it is increased, slowly, more of the sine component is introduced. ρ_β then provides a lower bound for β, 
-forcing the model to never be able to go below a specific sine wave contribution fraction. For example, a ρ_β of 0.15 will allow only β_eff >= sqrt(0.15)≈0.387, 
-or in direct terms a minimum multiplier on the sin component of (β_eff / (1 + |β_eff|)≈0.279.
+forcing the model to never be able to go below a specific sine wave contribution fraction. For example, a ρ_β of 0.15 will allow only β_eff >= 2*sqrt(0.15)≈0.775, 
+or in direct terms a minimum multiplier on the sin component of (β_eff / (1 + |β_eff|)≈0.437.
 
 # Experiments and Results
 
@@ -240,7 +240,7 @@ PLU, however, seems to form a more complex initial structure that rapidly "emerg
 
 ## The "Chaotic Initialization" Paradigm
 
-To explore the effect of the repulsive reparameterization, we conduct a second experiment with the same 8-neuron 2-8-8-1 MLP but initialize PLU with extreme repulsion terms (`init_rho_alpha=15.0`, `init_rho_beta=0.5`). This forces the effective α and β to be large from the outset, inducing high-frequency oscillations. Specifically, the earlier configurations for ρ sets a lower-bound for the optimizer on α and β of $α_eff >= 2.236$ and $β_eff >= 0.387$, while with the new configurations, this lower floor is lifted all the way to $α_eff >= 3.873$ and $β_eff >= 0.707$. The effect is that the contribution from the sine wave is forced to be very high throughout the run, and the oscillation period of that sine wave is also kept incredibly short.
+To explore the effect of the repulsive reparameterization, we conduct a second experiment with the same 8-neuron 2-8-8-1 MLP but initialize PLU with extreme repulsion terms (`init_rho_alpha=15.0`, `init_rho_beta=0.5`). This forces the effective α and β to be large from the outset, inducing high-frequency oscillations. Specifically, the earlier configurations for ρ sets a lower-bound for the optimizer on α and β of $α_eff >= 4.472$ and $β_eff >= 0.775$, while with the new configurations, this lower floor is lifted all the way to $α_eff >= 7.746$ and $β_eff >= 1.414$. The effect is that the contribution from the sine wave is forced to be very high throughout the run, and the oscillation period of that sine wave is also kept incredibly short.
 
 ![Figure 2](./Examples/spiral_activation_comparison_hidden_neurons_8_sin_pushed_extreme_epoch_0.jpg)
 
