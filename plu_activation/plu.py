@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class PeriodicLinearUnitExponential(nn.Module):
     """
-    An alternative formulation of the Periodic Linear Unit using e^x reparameterization instead of the original RR formulation.
+    An alternative formulation of the Periodic Linear Unit using e^x reparameterization in place of the original RR formulation.
     """
     def __init__(self, shape=(1,), init_alpha=0.0, init_beta=0.0):
         super().__init__()
@@ -14,7 +14,7 @@ class PeriodicLinearUnitExponential(nn.Module):
         # exponential reparameterization
         alpha_eff = torch.exp(self.alpha)
         beta_eff = torch.exp(self.beta)
-        return x + beta_eff * torch.sin(torch.abs(alpha_eff) * x)
+        return x + beta_eff * torch.sin(alpha_eff * x)
 
 class PeriodicLinearUnit(nn.Module):
     def __init__(self, shape=(1,), init_alpha=1.0, init_beta=1.0, init_rho_alpha=5.0, init_rho_beta=0.15):
