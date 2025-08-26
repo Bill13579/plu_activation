@@ -1,8 +1,23 @@
 import torch
 import torch.nn as nn
 
+class PeriodicLinearUnitExponential(nn.Module):
+    """
+    An alternative formulation of the Periodic Linear Unit using e^x reparameterization instead of the original RR formulation.
+    """
+    def __init__(self, shape=(1,), init_alpha=0.0, init_beta=0.0):
+        super().__init__()
+        self.alpha = nn.Parameter(torch.full(shape, init_alpha))
+        self.beta = nn.Parameter(torch.full(shape, init_beta))
+    
+    def forward(self, x):
+        # exponential reparameterization
+        alpha_eff = torch.exp(self.alpha)
+        beta_eff = torch.exp(self.beta)
+        return x + beta_eff * torch.sin(torch.abs(alpha_eff) * x)
+
 class PeriodicLinearUnit(nn.Module):
-    def __init__(self, num_parameters=1, init_alpha=1.0, init_beta=1.0, init_rho_alpha=5.0, init_rho_beta=0.15):
+    def __init__(self, shape=(1,), init_alpha=1.0, init_beta=1.0, init_rho_alpha=5.0, init_rho_beta=0.15):
         """
         A **Periodic Linear Unit (PLU)** is composed of a scaled linear sum of the sine function and x with α and β reparameterization, as described in the paper "From Taylor Series to Fourier Synthesis: The Periodic Linear Unit".
 
@@ -29,13 +44,13 @@ class PeriodicLinearUnit(nn.Module):
                 Repulsion term for keeping β away from 0.0, keeping β_eff >= sqrt(ρ_β)
         """
         super().__init__()
-        self.alpha = nn.Parameter(torch.full((num_parameters,), init_alpha))
-        self.beta = nn.Parameter(torch.full((num_parameters,), init_beta))
-        self.rho_alpha = nn.Parameter(torch.full((num_parameters,), init_rho_alpha))
-        self.rho_beta = nn.Parameter(torch.full((num_parameters,), init_rho_beta))
+        self.alpha = nn.Parameter(torch.full(shape, init_alpha))
+        self.beta = nn.Parameter(torch.full(shape, init_beta))
+        self.rho_alpha = nn.Parameter(torch.full(shape, init_rho_alpha))
+        self.rho_beta = nn.Parameter(torch.full(shape, init_rho_beta))
     
     def forward(self, x):
-        # repulsive reparameterization / asymptotic regularization
+        # repulsive reparameterization
         alpha_eff = self.alpha + self.rho_alpha / self.alpha
         beta_eff = self.beta + self.rho_beta / self.beta
         return x + (beta_eff / (1.0 + torch.abs(beta_eff))) * torch.sin(torch.abs(alpha_eff) * x)

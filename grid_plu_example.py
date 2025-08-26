@@ -140,8 +140,8 @@ if __name__ == '__main__':
         'GELU': SimpleMLP(nn.GELU(), nn.GELU(), hidden_size=HIDDEN_SIZE),
         'Snake': SimpleMLP(Snake(HIDDEN_SIZE, a=1.0), Snake(HIDDEN_SIZE, a=1.0), hidden_size=HIDDEN_SIZE),
         'PLU': SimpleMLP(
-            PeriodicLinearUnit(HIDDEN_SIZE, init_alpha=1.0, init_beta=1.0, init_rho_alpha=init_rho_alpha, init_rho_beta=init_rho_beta),
-            PeriodicLinearUnit(HIDDEN_SIZE, init_alpha=1.0, init_beta=1.0, init_rho_alpha=init_rho_alpha, init_rho_beta=init_rho_beta),
+            PeriodicLinearUnit((HIDDEN_SIZE,), init_alpha=1.0, init_beta=1.0, init_rho_alpha=init_rho_alpha, init_rho_beta=init_rho_beta),
+            PeriodicLinearUnit((HIDDEN_SIZE,), init_alpha=1.0, init_beta=1.0, init_rho_alpha=init_rho_alpha, init_rho_beta=init_rho_beta),
             hidden_size=HIDDEN_SIZE
         )
     }
