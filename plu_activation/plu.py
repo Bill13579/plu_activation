@@ -18,7 +18,8 @@ class PeriodicLinearUnitExponential(nn.Module):
         Since e^x has a lower and lower derivative below 0.0, each further dα step taken in that direction leads to a smaller and smaller dα_eff, thereby making each push 
         towards zero have less impact on the final loss, achieving our desired outcome.
         By using e^x reparameterization, we lose control over a specific lower bound for frequency and amplitude on the sine-wave component, but the benefit of 
-        being able to have the model find a pretty good local minimum on its own without hyperparameter searching is well worth the trade-off in a variety of use-cases.
+        being able to have the model find a pretty good local minimum on its own without hyperparameter searching is well worth the trade-off in a variety of use-cases. 
+        This is especially useful when using a separate learnable PLU activation for each hidden neuron, as hyperparameter searching is prohibitively expensive in that situation.
         """
         super().__init__()
         self.alpha = nn.Parameter(torch.full(shape, init_alpha))
