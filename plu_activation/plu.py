@@ -2,10 +2,24 @@ import torch
 import torch.nn as nn
 
 class PeriodicLinearUnitExponential(nn.Module):
-    """
-    An alternative formulation of the Periodic Linear Unit using e^x reparameterization in place of the original RR formulation.
-    """
     def __init__(self, shape=(1,), init_alpha=0.0, init_beta=0.0):
+        """
+        An alternative formulation of the Periodic Linear Unit using e^x reparameterization in place of the original RR formulation.
+
+        We start at a neutral point, where α=0.0 (α_eff=1.0) and β=0.0 (β_eff=1.0).
+        As either α or β gets pushed above 0.0, the sine-wave begins oscillating faster and contributes more to the sum respectively.
+        Since changing α to be higher, and thus increasing the oscillation, has a larger effect 
+        on the final output and loss when compared to a change at the lower end, a "larger leap of faith" 
+        is sometimes necessary to cross any hills in the loss plane to reach a better minimum.
+        Since e^x has a higher and higher derivative above 0.0, this leap of faith is mathematically provided, as a small dα leads to a larger and larger dα_eff.
+        As either α or β gets pushed below 0.0, the sine-wave begins to oscillate slower and slower and contributes less to the sum respectively.
+        Since both of those lead to a collapse to linearity, we want to disincentivize the optimizer from taking a step in that direction more and more as α veers 
+        closer to negative infinity.
+        Since e^x has a lower and lower derivative below 0.0, each further dα step taken in that direction leads to a smaller and smaller dα_eff, thereby making each push 
+        towards zero have less impact on the final loss, achieving our desired outcome.
+        By using e^x reparameterization, we lose control over a specific lower bound for frequency and amplitude on the sine-wave component, but the benefit of 
+        being able to have the model find a pretty good local minimum on its own without hyperparameter searching is well worth the trade-off in a variety of use-cases.
+        """
         super().__init__()
         self.alpha = nn.Parameter(torch.full(shape, init_alpha))
         self.beta = nn.Parameter(torch.full(shape, init_beta))
